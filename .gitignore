@@ -35,4 +35,6 @@ Thumbs.db
 **.data.json
 **.node-persist**
 **_IGNORE_**
+open-wa-session*.json
+*.postman_collection.json
 # end managed by open-wa
