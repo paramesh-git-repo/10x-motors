@@ -12,13 +12,13 @@
 2. Select your service
 3. Go to **Settings** → **Environment**
 4. Click **Add Environment Variable**
-5. Add each variable manually:
-   ```
-   NODE_ENV=production
-   MONGODB_URI=mongodb+srv://...
-   JWT_SECRET=...
-   etc.
-   ```
+5. Add each variable manually (see complete list below)
+
+**⚠️ IMPORTANT:**
+- Do NOT include quotes around values
+- ✅ Correct: `NODE_ENV=production`
+- ❌ Wrong: `NODE_ENV="production"`
+- Do NOT set PORT manually (Render provides it automatically)
 
 ### 2. **Backend Server Must Listen on process.env.PORT**
 
@@ -71,6 +71,68 @@ MONGODB_URI=mongodb+srv://parameshk_db_user:0lXLoA8ImM0Snr8m@cluster0.yjkbg8z.mo
 
 ---
 
+## 📋 Complete Environment Variables List
+
+### ✅ REQUIRED Environment Variables (for Render)
+
+| Key | Value Example | Description |
+|-----|---------------|-------------|
+| `NODE_ENV` | `production` | Ensures your app runs in production mode (optimized, no debug logs). |
+| `MONGODB_URI` | `mongodb+srv://parameshk_db_user:********@cluster0.yjkbg8z.mongodb.net/crm` | Your MongoDB Atlas connection string with your DB name (e.g., crm). |
+| `JWT_SECRET` | `fsd8Hsd72_sdgf9834sdjk!sdjfsdjk` | A long random secret key for signing JSON Web Tokens. |
+| `JWT_EXPIRE` | `7d` | Token expiration period (e.g., 7 days). |
+| `CORS_ORIGINS` | `https://your-netlify-app.netlify.app,http://localhost:3000` | ⚠️ Comma-separated allowed origins. Use your **Netlify URL** (not Render URL) |
+| `RATE_LIMIT_WINDOW_MS` | `900000` | Time window for rate limiting (in ms). 900000 = 15 minutes. |
+| `RATE_LIMIT_MAX_REQUESTS` | `100` | Number of allowed requests per window per IP. |
+
+**⚠️ IMPORTANT CORS_ORIGINS Note:**
+- ❌ Wrong: `https://your-frontend.onrender.com` (Render hosts backend, not frontend)
+- ✅ Correct: `https://your-netlify-app.netlify.app` (Netlify hosts frontend)
+- You can include multiple origins separated by commas
+- No trailing slashes
+
+### ⚙️ OPTIONAL / NICE-TO-HAVE Variables
+
+| Key | Value Example | Purpose |
+|-----|---------------|---------|
+| `LOG_LEVEL` | `info` | Control log verbosity (debug, info, warn, error). |
+| `EMAIL_FROM` | `no-reply@yourcrm.com` | For email notifications if your app sends mails. |
+| `EMAIL_SERVICE` | `gmail` | Email service provider (if applicable). |
+| `EMAIL_USER` | `yourgmail@gmail.com` | SMTP user for sending emails. |
+| `EMAIL_PASS` | `yourAppPassword` | App password for email SMTP auth. |
+
+**Note:** Include email variables only if your app supports emailing, else skip.
+
+---
+
+## 🔧 How to Add Environment Variables in Render
+
+1. **Go to Render Dashboard** → Your Service → **Settings** → **Environment**
+2. Click **"Add Environment Variable"**
+3. Enter **Key** and **Value** (one at a time)
+4. Click **"Save Changes"**
+5. Variables take effect on next deployment/request
+
+**✅ Example (What it looks like in Render Dashboard):**
+
+| Key | Value |
+|-----|-------|
+| `NODE_ENV` | `production` |
+| `MONGODB_URI` | `mongodb+srv://parameshk_db_user:********@cluster0.yjkbg8z.mongodb.net/crm` |
+| `JWT_SECRET` | `fsd8Hsd72_sdgf9834sdjk!sdjfsdjk` |
+| `JWT_EXPIRE` | `7d` |
+| `CORS_ORIGINS` | `https://your-netlify-app.netlify.app` |
+| `RATE_LIMIT_WINDOW_MS` | `900000` |
+| `RATE_LIMIT_MAX_REQUESTS` | `100` |
+
+**⚠️ Critical Reminders:**
+- ❌ Do NOT include quotes around values
+- ✅ Use: `NODE_ENV=production`
+- ❌ Don't use: `NODE_ENV="production"`
+- ❌ Do NOT set PORT manually (Render provides `process.env.PORT` automatically)
+
+---
+
 ## 🚀 Render Deployment Checklist
 
 ### Backend Service Setup:
@@ -80,14 +142,15 @@ MONGODB_URI=mongodb+srv://parameshk_db_user:0lXLoA8ImM0Snr8m@cluster0.yjkbg8z.mo
 - [ ] Root Directory: `backend`
 - [ ] Build Command: `npm install`
 - [ ] Start Command: `npm start`
-- [ ] Environment variables added (NOT from .env file):
-  - [ ] `NODE_ENV=production`
-  - [ ] `MONGODB_URI=...`
-  - [ ] `JWT_SECRET=...`
+- [ ] Environment variables added in Render Dashboard (NOT from .env file):
+  - [ ] `NODE_ENV=production` (no quotes)
+  - [ ] `MONGODB_URI=mongodb+srv://...` (your connection string)
+  - [ ] `JWT_SECRET=...` (your secret key, no quotes)
   - [ ] `JWT_EXPIRE=7d`
-  - [ ] `CORS_ORIGINS=https://your-netlify-app.netlify.app`
+  - [ ] `CORS_ORIGINS=https://your-netlify-app.netlify.app` (Netlify URL, not Render)
   - [ ] `RATE_LIMIT_WINDOW_MS=900000`
   - [ ] `RATE_LIMIT_MAX_REQUESTS=100`
+  - [ ] PORT is NOT set manually (Render provides it automatically)
 - [ ] Service deployed successfully
 - [ ] Health check endpoint working (if available)
 - [ ] Backend URL copied
