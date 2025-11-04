@@ -21,6 +21,35 @@ This guide explains how to deploy the CRM system to Netlify (Frontend) and Rende
 4. Whitelist IP addresses (or use 0.0.0.0/0 for all IPs)
 5. Get your connection string (looks like: `mongodb+srv://username:password@cluster.mongodb.net/crm?retryWrites=true&w=majority`)
 
+#### Option 1 — (Recommended) Use MongoDB Atlas URI
+
+**Format:**
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
+```
+
+**Example:**
+```
+MONGODB_URI=mongodb+srv://parameshk_db_user:0lXLoA8ImM0Snr8m@cluster0.yjkbg8z.mongodb.net/crm
+```
+
+**⚠️ Important Requirements:**
+
+1. **Password URL Encoding**: If your password contains special characters like `@`, `%`, `#`, `!`, `&`, `=`, `+`, `?`, `/`, you MUST URL-encode them:
+   - Example: Password `my@pass#123` becomes `my%40pass%23123`
+   - Use `encodeURIComponent()` in JavaScript or an online URL encoder
+   - Your current password (`0lXLoA8ImM0Snr8m`) ✅ **No encoding needed** (no special characters)
+
+2. **Network Access**: MongoDB Atlas network access MUST allow:
+   - ✅ **Allow all IPs**: `0.0.0.0/0` (recommended for Render)
+   - OR at least your Render service IPs
+   - Go to: MongoDB Atlas → **Network Access** → **Add IP Address**
+   - **⚠️ Without proper network access, your backend will fail to connect!**
+
+3. **Database Name**: 
+   - Always include `/crm` at the end of your connection string
+   - The database name (`crm`) will be auto-created on first write if it doesn't exist
+
 ### Step 2: Deploy Backend on Render
 
 1. Go to https://dashboard.render.com
