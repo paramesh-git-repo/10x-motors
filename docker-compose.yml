@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crm-backend
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    ports:
+      - "5001:5000"  # Mapped to 5001 to avoid conflict with macOS AirPlay
+      - "21465:21465"
+    volumes:
+      - wa_sessions:/app/sessions
+      - wa_cache:/home/appuser/.cache
+      - wa_data:/app/_IGNORE_crm-session
+    shm_size: "1g"
+    restart: always
+
+volumes:
+  wa_sessions:
+  wa_cache:
+  wa_data:
+
+
