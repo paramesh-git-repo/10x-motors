@@ -16,6 +16,16 @@ RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 ```
 
+**⚠️ MongoDB Atlas Connection String Requirements:**
+
+1. **Password URL Encoding**: If password contains `@`, `%`, `#`, `!`, `&`, `=`, `+`, `?`, `/`, encode them:
+   - Example: `my@pass` → `my%40pass`
+   - Current password ✅ No encoding needed
+
+2. **Network Access**: MongoDB Atlas → Network Access → Allow `0.0.0.0/0` (all IPs) OR Render IPs
+
+3. **Database Name**: Always include `/crm` at the end (auto-created if missing)
+
 #### ⚠️ IMPORTANT NOTES:
 
 1. **CORS_ORIGINS**: 

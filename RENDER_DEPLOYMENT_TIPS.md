@@ -78,7 +78,7 @@ MONGODB_URI=mongodb+srv://parameshk_db_user:0lXLoA8ImM0Snr8m@cluster0.yjkbg8z.mo
 | Key | Value Example | Description |
 |-----|---------------|-------------|
 | `NODE_ENV` | `production` | Ensures your app runs in production mode (optimized, no debug logs). |
-| `MONGODB_URI` | `mongodb+srv://parameshk_db_user:********@cluster0.yjkbg8z.mongodb.net/crm` | Your MongoDB Atlas connection string with your DB name (e.g., crm). |
+| `MONGODB_URI` | `mongodb+srv://parameshk_db_user:********@cluster0.yjkbg8z.mongodb.net/crm` | Your MongoDB Atlas connection string with your DB name (e.g., crm). **⚠️ See important notes below.** |
 | `JWT_SECRET` | `fsd8Hsd72_sdgf9834sdjk!sdjfsdjk` | A long random secret key for signing JSON Web Tokens. |
 | `JWT_EXPIRE` | `7d` | Token expiration period (e.g., 7 days). |
 | `CORS_ORIGINS` | `https://your-netlify-app.netlify.app,http://localhost:3000` | ⚠️ Comma-separated allowed origins. Use your **Netlify URL** (not Render URL) |
@@ -102,6 +102,52 @@ MONGODB_URI=mongodb+srv://parameshk_db_user:0lXLoA8ImM0Snr8m@cluster0.yjkbg8z.mo
 | `EMAIL_PASS` | `yourAppPassword` | App password for email SMTP auth. |
 
 **Note:** Include email variables only if your app supports emailing, else skip.
+
+---
+
+## ⚠️ MongoDB Atlas Connection String - Important Notes
+
+### Password URL Encoding
+
+If your MongoDB password contains special characters, you **MUST** URL-encode them:
+
+**Special Characters that need encoding:**
+- `@` → `%40`
+- `%` → `%25`
+- `#` → `%23`
+- `!` → `%21`
+- `&` → `%26`
+- `=` → `%3D`
+- `+` → `%2B`
+- `?` → `%3F`
+- `/` → `%2F`
+
+**Example:**
+- Password: `my@pass#123`
+- Encoded: `my%40pass%23123`
+- Connection string: `mongodb+srv://user:my%40pass%23123@cluster.mongodb.net/crm`
+
+**Current Password Check:**
+- Your password: `0lXLoA8ImM0Snr8m` ✅ **No encoding needed** (no special characters)
+
+### Network Access Configuration
+
+**MongoDB Atlas MUST allow Render to connect:**
+
+1. Go to MongoDB Atlas Dashboard
+2. Click **Network Access** (left sidebar)
+3. Click **Add IP Address**
+4. Choose one:
+   - ✅ **Allow Access from Anywhere**: `0.0.0.0/0` (recommended for Render)
+   - OR add specific Render IP ranges (if known)
+
+**⚠️ Without proper network access, your backend will fail to connect!**
+
+### Database Name
+
+- Always include `/crm` at the end of your connection string
+- If the database doesn't exist, MongoDB will auto-create it on first write
+- Example: `mongodb+srv://...@cluster.mongodb.net/crm` ✅
 
 ---
 
