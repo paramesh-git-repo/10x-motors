@@ -34,7 +34,11 @@ const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:3000'];
 
+console.log('========================================');
+console.log('CORS Configuration:');
+console.log('CORS_ORIGINS env var:', process.env.CORS_ORIGINS || 'NOT SET');
 console.log('CORS Origins configured:', corsOrigins);
+console.log('========================================');
 
 // Middleware
 app.use(helmet({
@@ -55,8 +59,10 @@ app.use(cors({
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
@@ -64,8 +70,13 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(mongoSanitize());
 app.use(morgan('dev'));
 
-// Rate limiting
-app.use('/api/', rateLimiter);
+// Rate limiting - skip OPTIONS requests (preflight)
+app.use('/api/', (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next(); // Skip rate limiting for OPTIONS
+  }
+  rateLimiter(req, res, next);
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
