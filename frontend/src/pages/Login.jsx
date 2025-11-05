@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { EyeIcon, EyeSlashIcon } from '../components/icons'
+import api from '../utils/api'
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -134,6 +135,37 @@ const Login = () => {
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                 Remember me
               </label>
+            </div>
+            <div className="text-sm">
+              <button
+                type="button"
+                onClick={async () => {
+                  // Always try to get reset token and navigate directly to reset password page
+                  const emailToUse = formData.email || '';
+                  
+                  if (emailToUse) {
+                    try {
+                      const response = await api.post('/auth/forgot-password', { email: emailToUse });
+                      if (response.success && response.resetToken) {
+                        // Navigate directly to reset password page with token
+                        navigate(`/reset-password/${response.resetToken}`);
+                      } else {
+                        // Fallback to forgot password page if no token
+                        navigate('/forgot-password');
+                      }
+                    } catch (error) {
+                      // On error, go to forgot password page
+                      navigate('/forgot-password');
+                    }
+                  } else {
+                    // If no email, go to forgot password page to enter email
+                    navigate('/forgot-password');
+                  }
+                }}
+                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
+              >
+                Forgot password?
+              </button>
             </div>
           </div>
 

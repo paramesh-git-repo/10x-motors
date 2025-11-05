@@ -359,7 +359,7 @@ router.put('/:id', async (req, res) => {
       totalCost: updateData.totalCost,
       advancedPaid_type: typeof updateData.advancedPaid
     });
-    
+
     const service = await Service.findByIdAndUpdate(
       req.params.id,
       updateData, // Direct update - Mongoose will update all fields
